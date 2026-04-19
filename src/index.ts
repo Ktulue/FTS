@@ -14,8 +14,8 @@ import { modules as moduleRegistry } from "./modules/index.js";
 import type { InputSource } from "./core/input/InputSource.js";
 import type { FstsConfig } from "./core/config/types.js";
 
-const CONFIG_PATH = "./config.jsonc";
-const EXAMPLE_PATH = "./config.example.jsonc";
+const CONFIG_PATH = process.env.FSTS_CONFIG_PATH ?? "./config.jsonc";
+const EXAMPLE_PATH = process.env.FSTS_EXAMPLE_PATH ?? "./config.example.jsonc";
 
 async function ensureConfig(): Promise<void> {
   if (!existsSync(CONFIG_PATH)) {
