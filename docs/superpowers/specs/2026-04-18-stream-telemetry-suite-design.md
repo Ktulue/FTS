@@ -420,16 +420,16 @@ Conceptual layout:
 ```
 ┌─ FSTS Admin Panel ──────────────────────────────────────┐
 │                                                         │
-│ Input:     ● udp (listening on :9999)                   │
+│ Input:     [*] udp (listening on :9999)                 │
 │ Uptime:    01:23:45   Packets: 298,410   Errors: 0      │
 │                                                         │
 │ Raw Outputs:                                            │
-│   ☐ moza-pit-house    (disabled)                        │
-│   ☐ simhub            (disabled)                        │
+│   [ ] moza-pit-house    (disabled)                      │
+│   [ ] simhub            (disabled)                      │
 │                                                         │
 │ Modules:                                                │
-│   ☑ Backseat Speedometer  ● running   0 errors          │
-│   ☑ Redline Alert         ● running   0 errors          │
+│   [x] Backseat Speedometer   running    0 errors        │
+│   [x] Redline Alert          running    0 errors        │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```

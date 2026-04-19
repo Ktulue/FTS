@@ -2311,7 +2311,7 @@ function render() {
     if (m.lastError) {
       const err = document.createElement("span");
       err.className = "error";
-      err.textContent = `⚠ ${m.lastError}`;
+      err.textContent = `! ${m.lastError}`;
       li.append(err);
     }
     list.append(li);
@@ -3433,9 +3433,9 @@ npm run dev       # tsx watch src/index.ts
 
 ## Support
 
-☕ [Buy me a coffee on Ko-fi](http://ko-fi.com/ktulue)
+[Buy me a coffee on Ko-fi](http://ko-fi.com/ktulue)
 
-Created by Ktulue | The Water Father 🌊
+Created by Ktulue | The Water Father
 ```
 
 - [ ] **Step 3: Commit**
