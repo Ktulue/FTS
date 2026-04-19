@@ -1,0 +1,40 @@
+{
+  // Forza UDP Data Out — configure FH5: Settings → HUD & Gameplay → Data Out → UDP, target 127.0.0.1:9999
+  "input": {
+    "type": "udp",
+    "port": 9999
+  },
+
+  // Forward raw UDP packets to additional destinations. Default: all disabled.
+  // Enable 'moza-pit-house' when you install Moza Pit House and configure it
+  // to listen on the 'port' below.
+  "rawOutputs": [
+    { "name": "moza-pit-house", "type": "udp-forward", "host": "127.0.0.1", "port": 5300,  "enabled": false },
+    { "name": "simhub",         "type": "udp-forward", "host": "127.0.0.1", "port": 22222, "enabled": false }
+  ],
+
+  "http": {
+    "port": 5780
+  },
+
+  "logging": {
+    "level": "info",
+    "dir": "./logs",
+    "pretty": true
+  },
+
+  "modules": {
+    "backseat-speedometer": {
+      "enabled": true,
+      "config": { "defaultUnits": "mph" }
+    },
+    "redline-alert": {
+      "enabled": true,
+      "config": {
+        "thresholdRatio": 0.96,
+        "minDurationMs": 1200,
+        "cooldownMs": 8000
+      }
+    }
+  }
+}
