@@ -2,6 +2,7 @@
 import express, { type Express } from "express";
 import { createServer, type Server as HttpServer } from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
+import { fileURLToPath } from "node:url";
 import type { AddressInfo } from "node:net";
 import type { TelemetryBus } from "../bus/TelemetryBus.js";
 import type { Logger } from "../logging/logger.js";
@@ -122,6 +123,15 @@ export class Server {
     this.app.get("/modules", (_req, res) => {
       res.json(this.currentModuleState);
     });
+
+    // Admin Panel
+    const hubBase = new URL("../hub/", import.meta.url);
+    const hubDir = fileURLToPath(hubBase);
+    const hubIndex = fileURLToPath(new URL("./index.html", hubBase));
+    this.app.get("/hub", (_req, res) => {
+      res.sendFile(hubIndex);
+    });
+    this.app.use("/hub/static", express.static(hubDir));
 
     this.app.post("/modules/:id/enable", async (req, res) => {
       try {

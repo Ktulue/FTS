@@ -1,0 +1,15 @@
+body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; }
+header { display: flex; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #333; }
+header h1 { margin: 0; font-size: 18px; }
+.status span { margin-left: 14px; font-size: 13px; color: #aaa; }
+main { padding: 20px; }
+#module-list { list-style: none; padding: 0; }
+#module-list li { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #222; }
+#module-list li input { margin-right: 12px; }
+#module-list li .name { flex: 1; }
+#module-list li .status-pill { padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+.status-pill.running { background: #0a5; color: #fff; }
+.status-pill.stopped { background: #555; color: #ccc; }
+.status-pill.errored { background: #a33; color: #fff; }
+.error { color: #f77; font-size: 11px; margin-left: 8px; }
+.custom-status { color: #9cf; font-size: 12px; margin-left: 8px; }

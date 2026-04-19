@@ -140,3 +140,17 @@ describe("Server — WebSocket broadcasts", () => {
     await server.stop();
   });
 });
+
+describe("Server — hub", () => {
+  it("serves /hub HTML", async () => {
+    const bus = new TelemetryBus();
+    const server = new Server({ port: 0, bus, log: silentLog() });
+    await server.start();
+    const port = (server.address() as AddressInfo).port;
+    const res = await fetch(`http://127.0.0.1:${port}/hub`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain("FSTS Admin");
+    await server.stop();
+  });
+});
