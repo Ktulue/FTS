@@ -1,7 +1,7 @@
 // src/core/bus/TelemetryBus.test.ts
 import { describe, it, expect, vi } from "vitest";
-import { TelemetryBus } from "./TelemetryBus";
-import type { TelemetryPacket } from "../parser/TelemetryPacket";
+import { TelemetryBus } from "./TelemetryBus.js";
+import type { TelemetryPacket } from "../parser/TelemetryPacket.js";
 
 function packet(overrides: Partial<TelemetryPacket> = {}): TelemetryPacket {
   return {

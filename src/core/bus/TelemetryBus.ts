@@ -1,5 +1,5 @@
 // src/core/bus/TelemetryBus.ts
-import type { TelemetryPacket } from "../parser/TelemetryPacket";
+import type { TelemetryPacket } from "../parser/TelemetryPacket.js";
 
 export type TelemetryHandler = (pkt: TelemetryPacket) => void;
 

@@ -1,5 +1,5 @@
 // src/core/parser/PacketParser.ts
-import type { TelemetryPacket } from "./TelemetryPacket";
+import type { TelemetryPacket } from "./TelemetryPacket.js";
 
 export const DASH_PACKET_SIZE = 324;
 

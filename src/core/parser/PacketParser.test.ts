@@ -1,6 +1,6 @@
 // src/core/parser/PacketParser.test.ts
 import { describe, it, expect } from "vitest";
-import { parseDashPacket, DASH_PACKET_SIZE } from "./PacketParser";
+import { parseDashPacket, DASH_PACKET_SIZE } from "./PacketParser.js";
 
 function buildDashBuffer(overrides: Partial<Record<string, number>> = {}): Buffer {
   const buf = Buffer.alloc(DASH_PACKET_SIZE);
