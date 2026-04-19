@@ -25,7 +25,7 @@ export interface TelemetryPacket {
   };
   /** Unique car identifier (for Car Report Card, Bicycle/Car phases) */
   carOrdinal: number;
-  /** Car class: 0=D, 1=C, 2=B, 3=A, 4=S, 5=R, 6=P, 7=X */
+  /** Car class (FH5): 0=D, 1=C, 2=B, 3=A, 4=S1, 5=S2, 6=X */
   carClass: number;
   /** Drivetrain: 0=FWD, 1=RWD, 2=AWD */
   drivetrainType: number;

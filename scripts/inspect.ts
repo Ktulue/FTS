@@ -38,7 +38,7 @@ function parseArgs(argv: string[]): Args {
   return args;
 }
 
-const CAR_CLASS = ["D", "C", "B", "A", "S", "R", "P", "X"];
+const CAR_CLASS = ["D", "C", "B", "A", "S1", "S2", "X"];
 const DRIVETRAIN = ["FWD", "RWD", "AWD"];
 
 async function main(): Promise<void> {
