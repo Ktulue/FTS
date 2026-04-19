@@ -104,3 +104,58 @@ describe("PluginHost — lifecycle & config slicing", () => {
     expect(onTelemetry).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("PluginHost — crash isolation", () => {
+  it("a throwing onTelemetry does not bubble out", async () => {
+    const bus = new TelemetryBus();
+    const host = new PluginHost({
+      plugins: [makePlugin("a", { onTelemetry: () => { throw new Error("boom"); } })],
+      moduleConfig: { a: { enabled: true } },
+      bus,
+      log: silentLogger(),
+      emit: () => {},
+      registerRoute: () => {},
+      errorThreshold: 999, // don't auto-disable for this test
+    });
+    await host.start();
+    // Expect NOT to throw
+    bus.publish({
+      timestamp: 1, isRaceOn: true, speed: 0, rpm: 0, maxRpm: 7000, gear: 0,
+      accelLateral: 0, accelLongitudinal: 0,
+      tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
+      carOrdinal: 0, carClass: 0, drivetrainType: 0,
+    });
+    const rec = host.state().find((r) => r.id === "a")!;
+    expect(rec.errorCount).toBe(1);
+    expect(rec.lastError).toContain("boom");
+  });
+
+  it("auto-disables after threshold errors within window", async () => {
+    const bus = new TelemetryBus();
+    const host = new PluginHost({
+      plugins: [makePlugin("a", { onTelemetry: () => { throw new Error("boom"); } })],
+      moduleConfig: { a: { enabled: true } },
+      bus,
+      log: silentLogger(),
+      emit: () => {},
+      registerRoute: () => {},
+      errorWindowMs: 10_000,
+      errorThreshold: 3,
+    });
+    await host.start();
+    const pkt = {
+      timestamp: 1, isRaceOn: true, speed: 0, rpm: 0, maxRpm: 7000, gear: 0,
+      accelLateral: 0, accelLongitudinal: 0,
+      tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
+      carOrdinal: 0, carClass: 0, drivetrainType: 0,
+    };
+    bus.publish(pkt);
+    bus.publish(pkt);
+    bus.publish(pkt); // threshold hit → auto-disable
+    // Yield to the event loop so the async disable can run
+    await new Promise((r) => setTimeout(r, 10));
+    const rec = host.state().find((r) => r.id === "a")!;
+    expect(rec.enabled).toBe(false);
+    expect(rec.status).toBe("stopped");
+  });
+});
