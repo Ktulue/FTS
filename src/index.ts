@@ -14,8 +14,8 @@ import { modules as moduleRegistry } from "./modules/index.js";
 import type { InputSource } from "./core/input/InputSource.js";
 import type { FstsConfig } from "./core/config/types.js";
 
-const CONFIG_PATH = process.env.FSTS_CONFIG_PATH ?? "./config.jsonc";
-const EXAMPLE_PATH = process.env.FSTS_EXAMPLE_PATH ?? "./config.example.jsonc";
+const CONFIG_PATH = process.env.FTS_CONFIG_PATH ?? "./config.jsonc";
+const EXAMPLE_PATH = process.env.FTS_EXAMPLE_PATH ?? "./config.example.jsonc";
 
 async function ensureConfig(): Promise<void> {
   if (!existsSync(CONFIG_PATH)) {
@@ -54,7 +54,7 @@ async function main(): Promise<void> {
 
   mkdirSync(cfg.logging.dir, { recursive: true });
   const rootLog = createRootLogger({ level: cfg.logging.level, pretty: cfg.logging.pretty ?? true });
-  const log = childLogger(rootLog, "fsts");
+  const log = childLogger(rootLog, "fts");
 
   // Raw outputs
   const rawOutputs = cfg.rawOutputs.map(
@@ -103,7 +103,7 @@ async function main(): Promise<void> {
     }
   });
 
-  log.info({ input: cfg.input.type, httpPort: cfg.http.port, modules: moduleRegistry.length }, "FSTS started");
+  log.info({ input: cfg.input.type, httpPort: cfg.http.port, modules: moduleRegistry.length }, "FTS started");
 
   // Graceful shutdown
   const shutdown = async (signal: string) => {

@@ -1,6 +1,6 @@
 // src/core/parser/TelemetryPacket.ts
 export interface TelemetryPacket {
-  /** Unix epoch ms when FSTS received/parsed the packet */
+  /** Unix epoch ms when FTS received/parsed the packet */
   timestamp: number;
   /** False when in menus / paused */
   isRaceOn: boolean;

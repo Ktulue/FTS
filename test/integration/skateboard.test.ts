@@ -40,20 +40,20 @@ async function waitFor<T>(fn: () => Promise<T>, timeoutMs: number): Promise<T> {
 describe("Skateboard integration", () => {
   it("boots, replays fixture, validates both pull and push paths", async () => {
     const httpPort = 15780 + Math.floor(Math.random() * 1000);
-    const tmp = mkdtempSync(join(tmpdir(), "fsts-int-"));
+    const tmp = mkdtempSync(join(tmpdir(), "fts-int-"));
     const fixture = resolve(ROOT, "test/fixtures/skateboard-smoke.fzt");
     const cfgPath = join(tmp, "config.jsonc");
     writeFileSync(cfgPath, makeConfig(httpPort, fixture));
 
-    // Spawn FSTS pointed at the temp config via env vars (no cwd gymnastics).
+    // Spawn FTS pointed at the temp config via env vars (no cwd gymnastics).
     // shell: true needed on Windows where `npx` is npx.cmd.
     const child = spawn("npx", ["tsx", resolve(ROOT, "src/index.ts")], {
       cwd: ROOT,
-      env: { ...process.env, FSTS_CONFIG_PATH: cfgPath, FSTS_EXAMPLE_PATH: cfgPath },
+      env: { ...process.env, FTS_CONFIG_PATH: cfgPath, FTS_EXAMPLE_PATH: cfgPath },
       stdio: ["ignore", "pipe", "pipe"],
       shell: true,
     });
-    child.stderr?.on("data", (d) => console.error("[fsts-stderr]", d.toString()));
+    child.stderr?.on("data", (d) => console.error("[fts-stderr]", d.toString()));
 
     try {
       // Wait for /health to come up
