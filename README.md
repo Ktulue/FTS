@@ -1,4 +1,4 @@
-# FSTS — Forza Stream Telemetry Suite
+# FTS — Forza Telemetry Suite
 
 A single TypeScript/Node process that receives Forza Horizon UDP telemetry, parses it, and fans the data out to stream-facing consumers: OBS browser-source overlays, Streamer.bot chat commands and alerts, and (optionally) downstream sim racing software like Moza Pit House or SimHub.
 
