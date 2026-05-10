@@ -40,4 +40,25 @@ describe("loadConfig", () => {
     );
     expect(() => loadConfig(path)).toThrow(ConfigValidationError);
   });
+
+  it("accepts input.game: 'fh5'", () => {
+    const path = writeTempConfig(
+      VALID.replace(
+        `"input": { "type": "udp", "port": 9999 }`,
+        `"input": { "type": "udp", "port": 9999, "game": "fh5" }`
+      )
+    );
+    const cfg = loadConfig(path);
+    expect(cfg.input.game).toBe("fh5");
+  });
+
+  it("rejects unknown input.game", () => {
+    const path = writeTempConfig(
+      VALID.replace(
+        `"input": { "type": "udp", "port": 9999 }`,
+        `"input": { "type": "udp", "port": 9999, "game": "fh99" }`
+      )
+    );
+    expect(() => loadConfig(path)).toThrow(ConfigValidationError);
+  });
 });

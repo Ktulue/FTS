@@ -1,8 +1,11 @@
 // src/core/config/types.ts
+export type ForzaGame = "fh5" | "fh6";
+
 export interface UDPInputConfig {
   type: "udp";
   port: number;
   host?: string;
+  game?: ForzaGame;
 }
 
 export interface MockInputConfig {
@@ -10,6 +13,7 @@ export interface MockInputConfig {
   file: string;
   loop?: boolean;
   speed?: number;
+  game?: ForzaGame;
 }
 
 export type InputConfig = UDPInputConfig | MockInputConfig;

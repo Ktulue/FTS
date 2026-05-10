@@ -5,6 +5,7 @@ import { createRootLogger, childLogger } from "./core/logging/logger.js";
 import { DirectUDPInput } from "./core/input/DirectUDPInput.js";
 import { MockInput } from "./core/input/MockInput.js";
 import { fh5DashParser } from "./core/parser/parsers/fh5DashParser.js";
+import type { ForzaDashParser } from "./core/parser/parsers/ForzaDashParser.js";
 import { TelemetryBus } from "./core/bus/TelemetryBus.js";
 import { UDPForwardOutput } from "./core/raw-outputs/UDPForwardOutput.js";
 import { RawOutputChain } from "./core/raw-outputs/RawOutputChain.js";
@@ -36,6 +37,18 @@ function createInput(cfg: FtsConfig): InputSource {
   return new MockInput({
     file: cfg.input.file, loop: cfg.input.loop, speed: cfg.input.speed,
   });
+}
+
+function createParser(cfg: FtsConfig): ForzaDashParser {
+  const game = cfg.input.game ?? "fh5";
+  switch (game) {
+    case "fh5":
+      return fh5DashParser;
+    case "fh6":
+      throw new Error("FH6 parser not yet implemented; set input.game to 'fh5'.");
+    default:
+      throw new Error(`Unknown input.game: ${game}`);
+  }
 }
 
 async function main(): Promise<void> {
@@ -89,6 +102,7 @@ async function main(): Promise<void> {
 
   // Input
   const input = createInput(cfg);
+  const parser = createParser(cfg);
   const inputLog = childLogger(rootLog, "input");
 
   await server.start();
@@ -96,14 +110,17 @@ async function main(): Promise<void> {
   await input.start((raw) => {
     rawChain.send(raw);
     try {
-      const pkt = fh5DashParser.parse(raw, Date.now());
+      const pkt = parser.parse(raw, Date.now());
       bus.publish(pkt);
     } catch (err) {
       inputLog.warn({ err, len: raw.length }, "parse error");
     }
   });
 
-  log.info({ input: cfg.input.type, httpPort: cfg.http.port, modules: moduleRegistry.length }, "FTS started");
+  log.info(
+    { input: cfg.input.type, game: cfg.input.game ?? "fh5", httpPort: cfg.http.port, modules: moduleRegistry.length },
+    "FTS started",
+  );
 
   // Graceful shutdown
   const shutdown = async (signal: string) => {
