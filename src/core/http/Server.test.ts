@@ -38,6 +38,7 @@ describe("Server — foundation", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 1, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     });
     const server = new Server({ port: 0, bus, log: silentLog() });
     await server.start();
@@ -69,6 +70,7 @@ describe("Server — WebSocket broadcasts", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 0, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     });
     await new Promise((r) => setTimeout(r, 50));
     expect(msgs.length).toBe(1);

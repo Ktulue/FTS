@@ -30,6 +30,11 @@ export const fh5DashParser: ForzaDashParser = {
       drivetrainType: buf.readInt32LE(224),
       speed: buf.readFloatLE(244),
       gear: buf.readUInt8(307),
+      steer: Math.max(-1, Math.min(1, buf.readInt8(308) / 127)),
+      throttle: buf.readUInt8(303) / 255,
+      brake: buf.readUInt8(304) / 255,
+      clutch: buf.readUInt8(305) / 255,
+      handbrake: buf.readUInt8(306) / 255,
     };
   },
 };

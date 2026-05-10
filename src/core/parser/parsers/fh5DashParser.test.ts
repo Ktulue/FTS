@@ -60,4 +60,51 @@ describe("fh5DashParser", () => {
     const buf = Buffer.alloc(100);
     expect(() => fh5DashParser.parse(buf, 1700000000000)).toThrow();
   });
+
+  it("decodes steer at offset 308 as signed int8 normalized to -1..1", () => {
+    const buf = buildDashBuffer();
+    // Full-left
+    buf.writeInt8(-127, 308);
+    let pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.steer).toBeCloseTo(-1, 3);
+    // Center
+    buf.writeInt8(0, 308);
+    pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.steer).toBe(0);
+    // Full-right
+    buf.writeInt8(127, 308);
+    pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.steer).toBeCloseTo(1, 3);
+  });
+
+  it("clamps extreme steer values to [-1, 1]", () => {
+    const buf = buildDashBuffer();
+    // -128 / 127 would be -1.0078; must clamp to -1
+    buf.writeInt8(-128, 308);
+    const pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.steer).toBe(-1);
+  });
+
+  it("decodes throttle/brake/clutch/handbrake at offsets 303-306 as uint8 / 255", () => {
+    const buf = buildDashBuffer();
+    buf.writeUInt8(0, 303);   buf.writeUInt8(0, 304);
+    buf.writeUInt8(0, 305);   buf.writeUInt8(0, 306);
+    let pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.throttle).toBe(0);
+    expect(pkt.brake).toBe(0);
+    expect(pkt.clutch).toBe(0);
+    expect(pkt.handbrake).toBe(0);
+
+    buf.writeUInt8(255, 303); buf.writeUInt8(255, 304);
+    buf.writeUInt8(255, 305); buf.writeUInt8(255, 306);
+    pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.throttle).toBe(1);
+    expect(pkt.brake).toBe(1);
+    expect(pkt.clutch).toBe(1);
+    expect(pkt.handbrake).toBe(1);
+
+    buf.writeUInt8(128, 303);
+    pkt = fh5DashParser.parse(buf, 0);
+    expect(pkt.throttle).toBeCloseTo(128 / 255, 4);
+  });
 });

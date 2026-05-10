@@ -29,4 +29,14 @@ export interface TelemetryPacket {
   carClass: number;
   /** Drivetrain: 0=FWD, 1=RWD, 2=AWD */
   drivetrainType: number;
+  /** Steering, -1..1 (negative = left). Derived from signed int8 at offset 308. */
+  steer: number;
+  /** Throttle pedal, 0..1. Derived from uint8 at offset 303. */
+  throttle: number;
+  /** Brake pedal, 0..1. Derived from uint8 at offset 304. */
+  brake: number;
+  /** Clutch pedal, 0..1. Derived from uint8 at offset 305. */
+  clutch: number;
+  /** Handbrake, 0..1. Derived from uint8 at offset 306. */
+  handbrake: number;
 }

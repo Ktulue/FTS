@@ -17,6 +17,11 @@ function packet(overrides: Partial<TelemetryPacket> = {}): TelemetryPacket {
     carOrdinal: 1,
     carClass: 0,
     drivetrainType: 0,
+    steer: 0,
+    throttle: 0,
+    brake: 0,
+    clutch: 0,
+    handbrake: 0,
     ...overrides,
   };
 }
