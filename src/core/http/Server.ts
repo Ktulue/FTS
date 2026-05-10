@@ -173,13 +173,7 @@ export class Server {
       }
 
       const wildcard = ((req.params as unknown as Record<string, string>)[0] ?? "");
-      let requested: string;
-      try {
-        requested = decodeURIComponent(wildcard);
-      } catch {
-        res.status(404).end();
-        return;
-      }
+      let requested = wildcard;
       if (requested === "" || requested.endsWith("/")) {
         requested = path.join(requested, "index.html");
       }

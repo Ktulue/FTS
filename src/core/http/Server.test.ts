@@ -7,6 +7,27 @@ import type { AddressInfo } from "node:net";
 import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import http from "node:http";
+
+function rawGet(port: number, rawPath: string): Promise<{ status: number; body: string }> {
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      { host: "127.0.0.1", port, method: "GET", path: rawPath },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (c) => chunks.push(c));
+        res.on("end", () => {
+          resolve({
+            status: res.statusCode ?? 0,
+            body: Buffer.concat(chunks).toString("utf8"),
+          });
+        });
+      },
+    );
+    req.on("error", reject);
+    req.end();
+  });
+}
 
 function silentLog() { return pino({ level: "silent" }); }
 
@@ -226,13 +247,26 @@ describe("Server.registerOverlay", () => {
   });
 
   it("blocks literal '..' traversal", async () => {
-    server.registerOverlay("test-mod", { builtInDir: builtIn });
-    server.updateModuleState([{
-      id: "test-mod", displayName: "Test", enabled: true, status: "running",
-      errorCount: 0, lastError: null, customStatus: null,
-    }]);
-    const res = await fetch(`http://127.0.0.1:${port}/overlays/test-mod/../../etc/passwd`);
-    expect(res.status).toBe(404);
+    // Use raw http to bypass WHATWG URL .. normalization that fetch() applies
+    // BEFORE the request is sent. Plant a sentinel file outside the root so the
+    // test would observably leak if the guard ever broke.
+    const outsideDir = mkdtempSync(path.join(tmpdir(), "fts-outside-"));
+    try {
+      writeFileSync(path.join(outsideDir, "secret.txt"), "SECRET-DO-NOT-LEAK");
+      const relative = path.relative(builtIn, path.join(outsideDir, "secret.txt"));
+
+      server.registerOverlay("test-mod", { builtInDir: builtIn });
+      server.updateModuleState([{
+        id: "test-mod", displayName: "Test", enabled: true, status: "running",
+        errorCount: 0, lastError: null, customStatus: null,
+      }]);
+
+      const res = await rawGet(port, `/overlays/test-mod/${relative.replace(/\\/g, "/")}`);
+      expect(res.status).toBe(404);
+      expect(res.body).not.toContain("SECRET-DO-NOT-LEAK");
+    } finally {
+      rmSync(outsideDir, { recursive: true, force: true });
+    }
   });
 
   it("blocks URL-encoded '..' traversal", async () => {
@@ -241,9 +275,10 @@ describe("Server.registerOverlay", () => {
       id: "test-mod", displayName: "Test", enabled: true, status: "running",
       errorCount: 0, lastError: null, customStatus: null,
     }]);
-    const res = await fetch(
-      `http://127.0.0.1:${port}/overlays/test-mod/%2e%2e/%2e%2e/etc/passwd`,
-    );
+
+    // %2e%2e survives WHATWG URL parsing as a literal segment, decoded by
+    // Express into ".." after routing, then caught by the path.resolve guard.
+    const res = await rawGet(port, `/overlays/test-mod/%2e%2e/%2e%2e/etc/passwd`);
     expect(res.status).toBe(404);
   });
 
