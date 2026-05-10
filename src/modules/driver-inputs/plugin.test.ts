@@ -65,4 +65,22 @@ describe("driverInputs plugin", () => {
       handbrakeEngageThreshold: 0.1,
     });
   });
+
+  it("config.json handler returns defaults when config slice is empty", async () => {
+    const ctx = makeCtx({ config: {} });
+    await driverInputs.onStart(ctx as any);
+    const routeCall = ctx.registerRoute.mock.calls.find(
+      (c: unknown[]) => c[0] === "GET" && c[1] === "/modules/driver-inputs/config.json",
+    );
+    expect(routeCall).toBeDefined();
+    const handler = routeCall![2] as (req: unknown, res: unknown) => void;
+    const sent: unknown[] = [];
+    const res = { json: (b: unknown) => { sent.push(b); } };
+    handler({}, res);
+    expect(sent[0]).toEqual({
+      wheelRotationRangeDeg: 450,
+      shifterPoseDurationMs: 350,
+      handbrakeEngageThreshold: 0.1,
+    });
+  });
 });

@@ -26,13 +26,13 @@ export const driverInputs: Plugin = {
     const cfg = (ctx.config ?? {}) as Config;
     const builtInDir = fileURLToPath(new URL("./public", import.meta.url));
     const userDir = cfg.userAssetDir ?? undefined;
-    ctx.registerOverlay({ builtInDir, userDir: userDir ?? undefined });
+    ctx.registerOverlay({ builtInDir, userDir });
 
     ctx.registerRoute(
       "GET",
       "/modules/driver-inputs/config.json",
-      (_req: Request, _res: Response) => {
-        _res.json({
+      (_req: Request, res: Response) => {
+        res.json({
           wheelRotationRangeDeg: cfg.wheelRotationRangeDeg ?? DEFAULTS.wheelRotationRangeDeg,
           shifterPoseDurationMs: cfg.shifterPoseDurationMs ?? DEFAULTS.shifterPoseDurationMs,
           handbrakeEngageThreshold:
