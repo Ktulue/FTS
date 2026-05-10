@@ -1,6 +1,6 @@
-## TODO.md — Re-entry On-Ramp Design
+# TODO.md — Re-entry On-Ramp Design
 
-**Status:** Draft — pending user review
+**Status:** Accepted — implemented in feat/todo-md (PR #2)
 **Date:** 2026-05-10
 **Scope:** Add `TODO.md` and a small `CLAUDE.md` to the FTS repo root. Establish a low-maintenance convention for keeping `TODO.md` current across intermittent work sessions.
 
