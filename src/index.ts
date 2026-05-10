@@ -12,7 +12,7 @@ import { Server } from "./core/http/Server.js";
 import { PluginHost } from "./core/plugin-host/PluginHost.js";
 import { modules as moduleRegistry } from "./modules/index.js";
 import type { InputSource } from "./core/input/InputSource.js";
-import type { FstsConfig } from "./core/config/types.js";
+import type { FtsConfig } from "./core/config/types.js";
 
 const CONFIG_PATH = process.env.FSTS_CONFIG_PATH ?? "./config.jsonc";
 const EXAMPLE_PATH = process.env.FSTS_EXAMPLE_PATH ?? "./config.example.jsonc";
@@ -29,7 +29,7 @@ async function ensureConfig(): Promise<void> {
   }
 }
 
-function createInput(cfg: FstsConfig): InputSource {
+function createInput(cfg: FtsConfig): InputSource {
   if (cfg.input.type === "udp") {
     return new DirectUDPInput({ port: cfg.input.port, host: cfg.input.host });
   }
@@ -41,7 +41,7 @@ function createInput(cfg: FstsConfig): InputSource {
 async function main(): Promise<void> {
   await ensureConfig();
 
-  let cfg: FstsConfig;
+  let cfg: FtsConfig;
   try {
     cfg = loadConfig(CONFIG_PATH);
   } catch (err) {

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { parse as parseJsonc, printParseErrorCode } from "jsonc-parser";
 import { Ajv, type ErrorObject } from "ajv";
 import { coreConfigSchema } from "./schema.js";
-import type { FstsConfig } from "./types.js";
+import type { FtsConfig } from "./types.js";
 
 export class ConfigValidationError extends Error {
   constructor(message: string, public readonly details: ErrorObject[] = []) {
@@ -15,7 +15,7 @@ export class ConfigValidationError extends Error {
 const ajv = new Ajv({ allErrors: true });
 const validateCore = ajv.compile(coreConfigSchema);
 
-export function loadConfig(path: string): FstsConfig {
+export function loadConfig(path: string): FtsConfig {
   const raw = readFileSync(path, "utf8");
   const errors: { error: number; offset: number; length: number }[] = [];
   const parsed = parseJsonc(raw, errors, { allowTrailingComma: true });
@@ -32,5 +32,5 @@ export function loadConfig(path: string): FstsConfig {
       .join("; ");
     throw new ConfigValidationError(`Invalid config: ${msg}`, details);
   }
-  return parsed as FstsConfig;
+  return parsed as FtsConfig;
 }

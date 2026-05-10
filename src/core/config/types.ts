@@ -39,7 +39,7 @@ export interface ModuleEntryConfig {
   config?: unknown;
 }
 
-export interface FstsConfig {
+export interface FtsConfig {
   input: InputConfig;
   rawOutputs: RawOutputConfig[];
   http: HttpConfig;
