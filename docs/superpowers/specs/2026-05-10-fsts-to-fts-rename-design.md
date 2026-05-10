@@ -11,13 +11,15 @@ Eliminate every live `FSTS` / `fsts` reference outside historical artifacts so t
 
 ### In-scope: code, config, tests, launchers, live docs
 
-**Code & config (9 files):**
+**Code & config (11 files):**
 
 | File | Change |
 |---|---|
-| `package.json` | `"name": "fsts"` → `"fts"` |
+| `package.json` | `"name": "fsts"` → `"fts"`; `"description": "Forza Stream Telemetry Suite"` → `"Forza Telemetry Suite"` (matches README H1; the dropped "Stream" mirrors the dropped "S" in the acronym) |
 | `package-lock.json` | Regenerate via `npm install` (do not hand-edit) |
-| `src/index.ts` | Env vars `FSTS_CONFIG_PATH` / `FSTS_EXAMPLE_PATH` → `FTS_CONFIG_PATH` / `FTS_EXAMPLE_PATH`; logger child name `"fsts"` → `"fts"`; log message `"FSTS started"` → `"FTS started"` |
+| `src/core/config/types.ts` | `export interface FstsConfig` → `FtsConfig` |
+| `src/core/config/loadConfig.ts` | 3 refs: `import type { FstsConfig }` → `FtsConfig`; `function loadConfig(path: string): FstsConfig` → `FtsConfig`; `return parsed as FstsConfig` → `FtsConfig` |
+| `src/index.ts` | `import type { FstsConfig }` → `FtsConfig` + 2 usages (`function createInput(cfg: FstsConfig)`, `let cfg: FstsConfig`); env vars `FSTS_CONFIG_PATH` / `FSTS_EXAMPLE_PATH` → `FTS_CONFIG_PATH` / `FTS_EXAMPLE_PATH`; logger child name `"fsts"` → `"fts"`; log message `"FSTS started"` → `"FTS started"` |
 | `src/core/parser/TelemetryPacket.ts` | Comment `"FSTS received/parsed"` → `"FTS received/parsed"` |
 | `src/core/hub/index.html` | `<title>FSTS Admin</title>` → `<title>FTS Admin</title>`; `<h1>FSTS</h1>` → `<h1>FTS</h1>` |
 | `src/core/http/Server.test.ts` | `expect(html).toContain("FSTS Admin")` → `expect(html).toContain("FTS Admin")` |
@@ -71,7 +73,7 @@ These are historical artifacts. Rewriting them would muddy the project's record.
 
 ## Verification & Success Criteria
 
-After the sweep, `grep -ri 'FSTS\|fsts'` from the project root should return hits ONLY inside:
+After the sweep, a case-insensitive grep (`grep -ri 'fsts'` — covers `FSTS`, `fsts`, and `Fsts`) from the project root should return hits ONLY inside:
 
 - `docs/superpowers/specs/2026-04-18-*` and `docs/superpowers/plans/2026-04-18-*` (historical)
 - `docs/superpowers/specs/2026-05-10-todo-md-design.md` and `docs/superpowers/plans/2026-05-10-todo-md.md` (historical narration)
