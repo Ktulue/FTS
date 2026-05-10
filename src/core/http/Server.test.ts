@@ -150,7 +150,7 @@ describe("Server — hub", () => {
     const res = await fetch(`http://127.0.0.1:${port}/hub`);
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(html).toContain("FSTS Admin");
+    expect(html).toContain("FTS Admin");
     await server.stop();
   });
 });
