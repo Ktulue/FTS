@@ -1,4 +1,4 @@
-# FSTS — Manual Smoke Test
+# FTS — Manual Smoke Test
 
 Run this checklist before declaring Skateboard complete.
 
@@ -10,8 +10,8 @@ Run this checklist before declaring Skateboard complete.
 
 ## Startup
 
-- [ ] Delete (or rename) your `config.jsonc`, run `start-fsts.bat` — FSTS copies `config.example.jsonc` → `config.jsonc` and exits with a clear message
-- [ ] Run `start-fsts.bat` again — FSTS starts, log shows "FSTS started" with input type, http port, module count
+- [ ] Delete (or rename) your `config.jsonc`, run `start-fts.bat` — FTS copies `config.example.jsonc` → `config.jsonc` and exits with a clear message
+- [ ] Run `start-fts.bat` again — FTS starts, log shows "FTS started" with input type, http port, module count
 - [ ] Open `http://localhost:5780/hub` — Admin Panel loads, module list shows Backseat Speedometer and Redline Alert
 - [ ] Open `http://localhost:5780/health` — returns `{"status":"ok", ...}`
 
@@ -34,16 +34,16 @@ Run this checklist before declaring Skateboard complete.
 
 ## Raw forwarder
 
-- [ ] Edit `config.jsonc`, set `moza-pit-house` raw output `enabled: true` with `port: 55555`; restart FSTS
+- [ ] Edit `config.jsonc`, set `moza-pit-house` raw output `enabled: true` with `port: 55555`; restart FTS
 - [ ] In another terminal: `ncat -ul 127.0.0.1 55555 --recv-only -v | od -An -tx1 -w16 | head -5`
 - [ ] Drive in Forza — netcat prints hex-dumped packets matching Forza's UDP output format
 
 ## MockInput
 
-- [ ] Edit `config.jsonc` to use `"input": {"type":"mock","file":"./test/fixtures/skateboard-smoke.fzt","loop":true,"speed":1.0}`; restart FSTS
+- [ ] Edit `config.jsonc` to use `"input": {"type":"mock","file":"./test/fixtures/skateboard-smoke.fzt","loop":true,"speed":1.0}`; restart FTS
 - [ ] `/telemetry/latest` updates even though Forza isn't running
 - [ ] Redline Alert fires during the redline segment of the replay
 
 ## Shutdown
 
-- [ ] Close the FSTS console window (or run `stop-fsts.bat`) — process exits cleanly, no stuck UDP binding (`netstat -an | findstr :9999` is empty)
+- [ ] Close the FTS console window (or run `stop-fts.bat`) — process exits cleanly, no stuck UDP binding (`netstat -an | findstr :9999` is empty)

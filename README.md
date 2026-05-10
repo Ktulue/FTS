@@ -16,12 +16,12 @@ Modules plug in via a unified `Plugin` contract and can be toggled on and off at
 
 ```
 git clone <repo>
-cd FSTS
+cd FTS
 npm install
 # First run will create config.jsonc from config.example.jsonc and exit:
 npm start
 # Edit config.jsonc if needed (default UDP port 9999, HTTP port 5780)
-start-fsts.bat
+start-fts.bat
 ```
 
 Configure Forza: Settings → HUD & Gameplay → Data Out → UDP, target `127.0.0.1:9999`, format "Dash".
