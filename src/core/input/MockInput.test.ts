@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 
 function tempRecordingPath(): string {
-  return join(tmpdir(), `fsts-test-${randomBytes(4).toString("hex")}.fzt`);
+  return join(tmpdir(), `fts-test-${randomBytes(4).toString("hex")}.fzt`);
 }
 
 describe("MockInput", () => {

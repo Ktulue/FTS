@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { loadConfig, ConfigValidationError } from "./loadConfig.js";
 
 function writeTempConfig(contents: string): string {
-  const dir = mkdtempSync(join(tmpdir(), "fsts-cfg-"));
+  const dir = mkdtempSync(join(tmpdir(), "fts-cfg-"));
   const path = join(dir, "config.jsonc");
   writeFileSync(path, contents);
   return path;
