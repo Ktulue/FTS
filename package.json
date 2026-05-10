@@ -1,7 +1,7 @@
 {
-  "name": "fsts",
+  "name": "fts",
   "version": "0.1.0",
-  "description": "Forza Stream Telemetry Suite",
+  "description": "Forza Telemetry Suite",
   "private": true,
   "type": "module",
   "scripts": {
