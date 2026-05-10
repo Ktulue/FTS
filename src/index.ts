@@ -4,7 +4,7 @@ import { loadConfig, ConfigValidationError } from "./core/config/loadConfig.js";
 import { createRootLogger, childLogger } from "./core/logging/logger.js";
 import { DirectUDPInput } from "./core/input/DirectUDPInput.js";
 import { MockInput } from "./core/input/MockInput.js";
-import { parseDashPacket } from "./core/parser/PacketParser.js";
+import { fh5DashParser } from "./core/parser/parsers/fh5DashParser.js";
 import { TelemetryBus } from "./core/bus/TelemetryBus.js";
 import { UDPForwardOutput } from "./core/raw-outputs/UDPForwardOutput.js";
 import { RawOutputChain } from "./core/raw-outputs/RawOutputChain.js";
@@ -96,7 +96,7 @@ async function main(): Promise<void> {
   await input.start((raw) => {
     rawChain.send(raw);
     try {
-      const pkt = parseDashPacket(raw, Date.now());
+      const pkt = fh5DashParser.parse(raw, Date.now());
       bus.publish(pkt);
     } catch (err) {
       inputLog.warn({ err, len: raw.length }, "parse error");
