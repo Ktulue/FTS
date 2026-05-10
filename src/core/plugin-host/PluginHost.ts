@@ -22,6 +22,13 @@ export type RegisterRouteFn = (
 
 export type UnregisterRoutesFn = (moduleId: string) => void;
 
+export type RegisterOverlayFn = (
+  moduleId: string,
+  opts: { builtInDir: string; userDir?: string },
+) => void;
+
+export type UnregisterOverlayFn = (moduleId: string) => void;
+
 export interface PluginHostOptions {
   plugins: Plugin[];
   moduleConfig: Record<string, ModuleEntryConfig>;
@@ -30,6 +37,8 @@ export interface PluginHostOptions {
   emit: EmitFn;
   registerRoute: RegisterRouteFn;
   unregisterRoutes?: UnregisterRoutesFn;
+  registerOverlay?: RegisterOverlayFn;
+  unregisterOverlay?: UnregisterOverlayFn;
   /** Auto-disable thresholds, with sensible defaults */
   errorWindowMs?: number;   // default 10000
   errorThreshold?: number;  // default 5
@@ -57,6 +66,8 @@ export class PluginHost {
   private emit: EmitFn;
   private registerRoute: RegisterRouteFn;
   private unregisterRoutes: UnregisterRoutesFn;
+  private registerOverlay: RegisterOverlayFn;
+  private unregisterOverlay: UnregisterOverlayFn;
   private records = new Map<string, PluginRecord>();
   private unsubscribers = new Map<string, () => void>();
   private errorTimestamps = new Map<string, number[]>();
@@ -72,6 +83,8 @@ export class PluginHost {
     this.emit = opts.emit;
     this.registerRoute = opts.registerRoute;
     this.unregisterRoutes = opts.unregisterRoutes ?? (() => {});
+    this.registerOverlay = opts.registerOverlay ?? (() => {});
+    this.unregisterOverlay = opts.unregisterOverlay ?? (() => {});
     this.errorWindowMs = opts.errorWindowMs ?? 10_000;
     this.errorThreshold = opts.errorThreshold ?? 5;
     this.onStateChange = opts.onStateChange;
@@ -164,6 +177,7 @@ export class PluginHost {
       this.unsubscribers.delete(plugin.id);
     }
     this.unregisterRoutes(plugin.id);
+    this.unregisterOverlay(plugin.id);
     try {
       await plugin.onStop();
     } catch (err) {
@@ -216,6 +230,9 @@ export class PluginHost {
       },
       registerRoute: (method, path, handler) => {
         this.registerRoute(plugin.id, method, path, handler);
+      },
+      registerOverlay: (opts) => {
+        this.registerOverlay(plugin.id, opts);
       },
       log: childLogger(this.log, plugin.id),
       config: (this.config[plugin.id]?.config) ?? {},

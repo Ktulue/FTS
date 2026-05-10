@@ -12,6 +12,8 @@ export interface PluginContext {
   emit(channel: EmitChannel, event: string, payload: unknown): void;
   /** Register an HTTP route scoped under the plugin's id namespace. */
   registerRoute(method: HttpMethod, path: string, handler: RouteHandler): void;
+  /** Register a static-file overlay served at GET /overlays/<plugin.id>/* */
+  registerOverlay(opts: { builtInDir: string; userDir?: string }): void;
   /** Per-module child logger, pre-tagged with module id. */
   log: Logger;
   /** This plugin's config slice (as loaded from config.jsonc). */

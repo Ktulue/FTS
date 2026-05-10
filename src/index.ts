@@ -95,6 +95,8 @@ async function main(): Promise<void> {
       server.registerModuleRoute(moduleId, method, path, handler);
     },
     unregisterRoutes: (moduleId) => server.unregisterModuleRoutes(moduleId),
+    registerOverlay: (moduleId, opts) => server.registerOverlay(moduleId, opts),
+    unregisterOverlay: (moduleId) => server.unregisterOverlay(moduleId),
     onStateChange: (state) => server.updateModuleState(state),
   });
   server.onEnable = (id) => host.enable(id);
