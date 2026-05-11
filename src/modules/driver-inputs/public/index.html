@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Driver Inputs</title>
+  <link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+  <div id="root">
+    <div id="wheel-wrap">
+      <img id="wheel" data-slot="wheel" src="assets/wheel.png">
+      <img id="hand-left" data-slot="hand_left" src="assets/hand_left.png">
+      <img id="hand-right" data-slot="hand_right_steering" src="assets/hand_right_steering.png">
+    </div>
+
+    <div id="pedals">
+      <div class="pedal">
+        <img class="pedal-base" data-slot="pedal_base" src="assets/pedal_base.png">
+        <img class="pedal-fill" data-slot="pedal_fill" data-pedal="throttle" src="assets/pedal_fill.png">
+        <div class="pedal-label">T</div>
+      </div>
+      <div class="pedal">
+        <img class="pedal-base" data-slot="pedal_base" src="assets/pedal_base.png">
+        <img class="pedal-fill" data-slot="pedal_fill" data-pedal="brake" src="assets/pedal_fill.png">
+        <div class="pedal-label">B</div>
+      </div>
+      <div class="pedal">
+        <img class="pedal-base" data-slot="pedal_base" src="assets/pedal_base.png">
+        <img class="pedal-fill" data-slot="pedal_fill" data-pedal="clutch" src="assets/pedal_fill.png">
+        <div class="pedal-label">C</div>
+      </div>
+    </div>
+
+    <div id="feet">
+      <img id="foot-left" data-slot="foot_left" src="assets/foot_left.png">
+      <img id="foot-right" data-slot="foot_right" src="assets/foot_right.png">
+    </div>
+
+    <div id="shifter">
+      <img id="shifter-base" data-slot="shifter_base" src="assets/shifter_base.png">
+      <img id="shifter-knob" data-slot="shifter_knob" src="assets/shifter_knob.png">
+    </div>
+
+    <div id="ebrake">
+      <img id="ebrake-base" data-slot="ebrake_base" src="assets/ebrake_base.png">
+      <img id="ebrake-lever" data-slot="ebrake" src="assets/ebrake.png">
+      <img id="ebrake-effect" data-slot="ebrake_effect" src="assets/ebrake_effect.png">
+    </div>
+
+    <div id="gear">N</div>
+  </div>
+  <script src="overlay.js" defer></script>
+</body>
+</html>

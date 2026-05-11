@@ -3,6 +3,8 @@ import express, { type Express } from "express";
 import { createServer, type Server as HttpServer } from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
 import { fileURLToPath } from "node:url";
+import { existsSync, statSync } from "node:fs";
+import path from "node:path";
 import type { AddressInfo } from "node:net";
 import type { TelemetryBus } from "../bus/TelemetryBus.js";
 import type { Logger } from "../logging/logger.js";
@@ -29,6 +31,7 @@ export class Server {
   private packetsReceived = 0;
   private startedAt = Date.now();
   private moduleRoutes: ModuleRoute[] = [];
+  private overlays = new Map<string, { builtInDir: string; userDir?: string }>();
   private disabledModules = new Set<string>();
   // State broadcast to admin clients
   private currentModuleState: PluginRecord[] = [];
@@ -91,6 +94,14 @@ export class Server {
     this.moduleRoutes = this.moduleRoutes.filter((r) => r.moduleId !== moduleId);
   }
 
+  registerOverlay(moduleId: string, opts: { builtInDir: string; userDir?: string }): void {
+    this.overlays.set(moduleId, { builtInDir: opts.builtInDir, userDir: opts.userDir });
+  }
+
+  unregisterOverlay(moduleId: string): void {
+    this.overlays.delete(moduleId);
+  }
+
   emitEvent(moduleId: string, event: string, payload: unknown): void {
     if (this.disabledModules.has(moduleId)) return;
     const msg = JSON.stringify({
@@ -149,6 +160,41 @@ export class Server {
       } catch (err) {
         res.status(400).json({ error: (err as Error).message });
       }
+    });
+
+    // Overlay assets: GET /overlays/:moduleId/* — user dir wins, built-in fallback
+    this.app.get("/overlays/:moduleId/*", (req, res) => {
+      const moduleId = req.params.moduleId;
+      const entry = this.overlays.get(moduleId);
+      if (!entry) { res.status(404).end(); return; }
+      if (this.disabledModules.has(moduleId)) {
+        res.status(503).json({ error: `Module ${moduleId} is disabled` });
+        return;
+      }
+
+      const wildcard = ((req.params as unknown as Record<string, string>)[0] ?? "");
+      let requested = wildcard;
+      if (requested === "" || requested.endsWith("/")) {
+        requested = path.join(requested, "index.html");
+      }
+
+      const dirs = entry.userDir ? [entry.userDir, entry.builtInDir] : [entry.builtInDir];
+      for (const dir of dirs) {
+        const rootResolved = path.resolve(dir);
+        const candidate = path.resolve(rootResolved, requested);
+        if (!candidate.startsWith(rootResolved + path.sep) && candidate !== rootResolved) {
+          continue; // traversal — try next dir (would fail same check)
+        }
+        try {
+          if (existsSync(candidate) && statSync(candidate).isFile()) {
+            res.sendFile(candidate);
+            return;
+          }
+        } catch {
+          // permission / IO — skip to next dir
+        }
+      }
+      res.status(404).end();
     });
 
     // Module-registered routes: match against moduleRoutes

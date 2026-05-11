@@ -1,7 +1,9 @@
 // test/fixtures/generate-smoke.ts
 // Run via: npx tsx test/fixtures/generate-smoke.ts
 import { writeRecording } from "../../src/core/input/recordingFormat.js";
-import { DASH_PACKET_SIZE } from "../../src/core/parser/PacketParser.js";
+import { fh5DashParser } from "../../src/core/parser/parsers/fh5DashParser.js";
+
+const DASH_PACKET_SIZE = fh5DashParser.minPacketSize;
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 

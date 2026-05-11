@@ -7,7 +7,7 @@
 //   npm run inspect -- my-drive.fzt --limit 20        (cap output rows)
 //   npm run inspect -- my-drive.fzt --json            (raw JSON dump instead of table)
 import { readRecording } from "../src/core/input/recordingFormat.js";
-import { parseDashPacket } from "../src/core/parser/PacketParser.js";
+import { fh5DashParser } from "../src/core/parser/parsers/fh5DashParser.js";
 import { resolve } from "node:path";
 
 interface Args {
@@ -63,7 +63,7 @@ async function main(): Promise<void> {
 
   if (args.json) {
     for (const e of limited) {
-      const pkt = parseDashPacket(e.packet, e.relativeMs);
+      const pkt = fh5DashParser.parse(e.packet, e.relativeMs);
       console.log(JSON.stringify({ relativeMs: e.relativeMs, ...pkt }));
     }
     return;
@@ -71,7 +71,7 @@ async function main(): Promise<void> {
 
   // Tabular: time, race, mph, kph, gear, rpm/max, ratio, lat-G, long-G, car class, drivetrain
   const rows = limited.map((e) => {
-    const p = parseDashPacket(e.packet, e.relativeMs);
+    const p = fh5DashParser.parse(e.packet, e.relativeMs);
     return {
       "t(s)":   (e.relativeMs / 1000).toFixed(2),
       race:     p.isRaceOn ? "Y" : "N",

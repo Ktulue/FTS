@@ -67,6 +67,7 @@ describe("PluginHost — lifecycle & config slicing", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 1, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     });
 
     expect(onTelemetry).toHaveBeenCalledTimes(1);
@@ -91,6 +92,7 @@ describe("PluginHost — lifecycle & config slicing", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 1, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     });
     expect(onTelemetry).not.toHaveBeenCalled();
 
@@ -100,6 +102,7 @@ describe("PluginHost — lifecycle & config slicing", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 1, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     });
     expect(onTelemetry).toHaveBeenCalledTimes(1);
   });
@@ -124,6 +127,7 @@ describe("PluginHost — crash isolation", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 0, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     });
     const rec = host.state().find((r) => r.id === "a")!;
     expect(rec.errorCount).toBe(1);
@@ -148,6 +152,7 @@ describe("PluginHost — crash isolation", () => {
       accelLateral: 0, accelLongitudinal: 0,
       tireSlipRatio: { fl: 0, fr: 0, rl: 0, rr: 0 },
       carOrdinal: 0, carClass: 0, drivetrainType: 0,
+      steer: 0, throttle: 0, brake: 0, clutch: 0, handbrake: 0,
     };
     bus.publish(pkt);
     bus.publish(pkt);

@@ -1,0 +1,112 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+body { font-family: system-ui, sans-serif; color: #ddd; }
+
+#root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+#wheel-wrap {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+  width: 36vmin;
+  height: 36vmin;
+  transition: transform 30ms linear;
+}
+#wheel-wrap img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+#hand-left  { transform: translate(-20%, -10%); }
+#hand-right { transform: translate( 20%, -10%); }
+
+#pedals {
+  position: absolute;
+  left: 6%;
+  bottom: 6%;
+  display: flex;
+  gap: 1.5vmin;
+  height: 36vmin;
+}
+.pedal {
+  position: relative;
+  width: 6vmin;
+  height: 100%;
+}
+.pedal-base, .pedal-fill {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+.pedal-fill {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  transition: transform 50ms linear;
+}
+.pedal-label {
+  position: absolute;
+  bottom: -2.2vmin;
+  width: 100%;
+  text-align: center;
+  font-size: 1.6vmin;
+  opacity: 0.7;
+}
+
+#feet {
+  position: absolute;
+  left: 4%;
+  bottom: 2%;
+  width: 24vmin;
+  height: 8vmin;
+}
+#feet img {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 50ms linear;
+}
+#foot-left  { left: 0; }
+#foot-right { left: 50%; }
+
+#shifter {
+  position: absolute;
+  right: 6%;
+  bottom: 12%;
+  width: 16vmin;
+  height: 16vmin;
+}
+#shifter-base { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+#shifter-knob {
+  position: absolute;
+  width: 18%;
+  height: 18%;
+  left: 41%;
+  top: 41%;
+  transition: transform 80ms linear;
+}
+
+#ebrake {
+  position: absolute;
+  right: 28%;
+  bottom: 8%;
+  width: 5vmin;
+  height: 18vmin;
+}
+#ebrake img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+#ebrake-lever {
+  transform-origin: 50% 90%;
+  transition: transform 80ms linear;
+}
+#ebrake-effect { opacity: 0; transition: opacity 80ms linear; }
+
+#gear {
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  font-size: 12vmin;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
