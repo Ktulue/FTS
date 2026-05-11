@@ -2,7 +2,8 @@
   // Forza UDP Data Out — configure FH5: Settings → HUD & Gameplay → Data Out → UDP, target 127.0.0.1:9999
   "input": {
     "type": "udp",
-    "port": 9999
+    "port": 9999,
+    "game": "fh5"        // "fh5" today; "fh6" reserved
   },
 
   // Forward raw UDP packets to additional destinations. Default: all disabled.
@@ -34,6 +35,15 @@
         "thresholdRatio": 0.96,
         "minDurationMs": 1200,
         "cooldownMs": 8000
+      }
+    },
+    "driver-inputs": {
+      "enabled": true,
+      "config": {
+        "userAssetDir": null,
+        "wheelRotationRangeDeg": 450,
+        "shifterPoseDurationMs": 350,
+        "handbrakeEngageThreshold": 0.1
       }
     }
   }
