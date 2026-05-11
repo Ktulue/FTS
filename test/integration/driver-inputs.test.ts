@@ -10,7 +10,8 @@ import WebSocket from "ws";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 
-const HTTP_PORT = 15780 + 800 + Math.floor(Math.random() * 200);
+// Disjoint from skateboard.test.ts which uses [15780, 16779].
+const HTTP_PORT = 16800 + Math.floor(Math.random() * 200);  // [16800, 16999]
 
 let proc: ChildProcess | undefined;
 let workDir: string;
@@ -50,6 +51,10 @@ async function waitFor<T>(fn: () => Promise<T>, timeoutMs: number): Promise<T> {
   throw lastErr;
 }
 
+// Subprocess cleanup note: child.kill() with shell:true on Windows doesn't
+// cascade through cmd.exe → npx → node → tsx, so the FTS process can orphan.
+// Same issue exists in skateboard.test.ts. The fix would be a shared helper
+// using tree-kill or `taskkill /F /T /PID`. Tracked as future maintenance.
 beforeAll(async () => {
   workDir = mkdtempSync(join(tmpdir(), "fts-di-int-"));
   // Copy fixture into workDir so MockInput can read it under our temp tree
@@ -119,26 +124,29 @@ describe("driver-inputs overlay (integration)", () => {
 
   it("WS /telemetry emits packets with the input fields", async () => {
     const ws = new WebSocket(`ws://127.0.0.1:${HTTP_PORT}/telemetry`);
-    const pkt = await new Promise<Record<string, unknown>>((resolveP, rejectP) => {
-      const t = setTimeout(() => rejectP(new Error("no telemetry within 5s")), 5000);
-      ws.on("message", (data) => {
-        try {
-          const msg = JSON.parse(String(data)) as { type?: string; data?: Record<string, unknown> };
-          if (msg.type === "telemetry" && msg.data) {
-            clearTimeout(t);
-            resolveP(msg.data);
-          }
-        } catch { /* ignore parse errors */ }
+    try {
+      const pkt = await new Promise<Record<string, unknown>>((resolveP, rejectP) => {
+        const t = setTimeout(() => rejectP(new Error("no telemetry within 5s")), 5000);
+        ws.on("message", (data) => {
+          try {
+            const msg = JSON.parse(String(data)) as { type?: string; data?: Record<string, unknown> };
+            if (msg.type === "telemetry" && msg.data) {
+              clearTimeout(t);
+              resolveP(msg.data);
+            }
+          } catch { /* ignore parse errors */ }
+        });
+        ws.on("error", rejectP);
       });
-      ws.on("error", rejectP);
-    });
-    ws.close();
-    expect(typeof pkt.steer).toBe("number");
-    expect(typeof pkt.throttle).toBe("number");
-    expect(typeof pkt.brake).toBe("number");
-    expect(typeof pkt.clutch).toBe("number");
-    expect(typeof pkt.handbrake).toBe("number");
-  });
+      expect(typeof pkt.steer).toBe("number");
+      expect(typeof pkt.throttle).toBe("number");
+      expect(typeof pkt.brake).toBe("number");
+      expect(typeof pkt.clutch).toBe("number");
+      expect(typeof pkt.handbrake).toBe("number");
+    } finally {
+      ws.close();
+    }
+  }, 8000);
 
   it("overlay becomes unavailable after the module is disabled (and recovers on enable)", async () => {
     // Disable: PluginHost.stopPlugin() → unregisterOverlay() → 404 in e2e.
