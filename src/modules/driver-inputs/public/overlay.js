@@ -3,14 +3,16 @@
 const SLOTS_WITH_PNG_FIRST = true; // built-in ships .svg; user can drop .png that wins
 
 function installFallback(img) {
-  // PNG → SVG fallback once per img.
-  let triedSvg = false;
+  // PNG → SVG fallback: re-arms naturally across data-slot/src changes.
   img.addEventListener("error", () => {
-    if (triedSvg) return;
-    triedSvg = true;
     const slot = img.dataset.slot;
     if (!slot) return;
-    img.src = `assets/${slot}.svg`;
+    // Only retry if we're currently pointing at the PNG. If we already
+    // swapped to .svg and it ALSO failed, leave the broken-image icon as
+    // a visible hint — don't loop.
+    if (img.src.endsWith(`/assets/${slot}.png`)) {
+      img.src = `assets/${slot}.svg`;
+    }
   });
 }
 
@@ -31,6 +33,8 @@ function gearLabel(g) {
   return String(g);
 }
 
+// Mirror of src/modules/driver-inputs/gearGate.ts (browser has no build step,
+// can't import .ts directly). Keep in sync.
 function gearGate(gear) {
   const COL = 40, ROW = 30;
   const map = {
@@ -46,6 +50,8 @@ function gearGate(gear) {
   return { x: 0, y: -ROW - (gear - 6) * 10 };
 }
 
+// Mirror of src/modules/driver-inputs/handPose.ts (browser has no build step,
+// can't import .ts directly). Keep in sync.
 function handPose(i) {
   if (i.nowMs - i.lastGearChangeMs < i.shifterPoseDurationMs) return "shifter";
   if (i.handbrake > i.handbrakeEngageThreshold) return "ebrake";

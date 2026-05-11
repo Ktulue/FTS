@@ -1,3 +1,6 @@
+// Mirrored verbatim in src/modules/driver-inputs/public/overlay.js (no build step).
+// Keep both implementations in sync — same H-pattern table, same fallback math.
+
 export interface GatePosition {
   /** Horizontal offset from center, in percent (-X = left). */
   x: number;

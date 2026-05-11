@@ -1,3 +1,6 @@
+// Mirrored verbatim in src/modules/driver-inputs/public/overlay.js (no build step).
+// Keep both implementations in sync — same priority order, same operators.
+
 export type HandPose = "shifter" | "ebrake" | "floating" | "steering";
 
 export interface HandPoseInputs {
